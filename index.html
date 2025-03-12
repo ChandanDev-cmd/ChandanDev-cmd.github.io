@@ -1,65 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html>
+<head>
     <title>Login Page</title>
     <style>
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        background-image: url('https://source.unsplash.com/1600x900/?technology');
-        background-size: cover;
-        background-position: center;
-      }
-      .login-container {
-        background-color: rgba(0, 0, 0, 0.7);
-        padding: 40px;
-        border-radius: 15px;
-        text-align: center;
-        color: white;
-        width: 300px;
-      }
-      input {
-        width: 100%;
-        padding: 10px;
-        margin: 10px 0;
-        border-radius: 5px;
-        border: none;
-      }
-      button {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        background-color: #007bff;
-        color: white;
-        cursor: pointer;
-      }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .login-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="login-container">
-      <h2>Login</h2>
-      <input type="text" id="username" placeholder="Username" />
-      <input type="password" id="password" placeholder="Password" />
-      <button onclick="login()">Login</button>
-      <p id="error" style="color: red"></p>
+        <h2>Login</h2>
+        <input type="text" id="regno" placeholder="Registration Number">
+        <input type="password" id="name" placeholder="Name">
+        <button onclick="login()">Login</button>
     </div>
 
     <script>
-      function login() {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+        const users = {
+            "RA2411043010062": "BHAVISH DESAI",
+            "RA2411043010063": "S S AVYUKTA",
+            "RA2411043010064": "ANUSHKA RISHIVANSHI",
+            "RA2411043010065": "ASHWIN SIVAKUMAR",
+            "RA2411043010066": "HOTE DEVASHREE MANGESH",
+            "RA2411043010067": "PADMESH GARADALA",
+            "RA2411043010068": "KOLLURI VEDASAI MANASA",
+            "RA2411043010069": "R MITRA",
+            "RA2411043010070": "S SRIVATHS",
+            "RA2411043010071": "SAMARTH R ANEGUNDI",
+            "RA2411043010072": "MUKESH M R",
+            "RA2411043010073": "HARINI J",
+            "RA2411043010074": "PRADYUMNA KRISHNAN",
+            "RA2411043010075": "SHASHWAT SINGH",
+            "RA2411043010076": "ABHISHEK KUMAR SINGH",
+            "RA2411043010077": "ABHI SIKHITA RUDRAVARAM",
+            "RA2411043010078": "MOHAMAD AMAAN KHAN",
+            "RA2411043010079": "HIMANSHU GOLYA",
+            "RA2411043010080": "JISHNUDEB BISWAS",
+            "RA2411043010081": "BHARATH ADITHYA C A",
+            "RA2411043010083": "TUSHAR RAJ",
+            "RA2411043010084": "V PRANEEL",
+            "RA2411043010085": "PRATIKSHYA KHANDUAL",
+            "RA2411043010086": "DHANIRALBAN KARUPPIAH",
+            "RA2411043010087": "TANISHA MAAN",
+            "RA2411043010088": "ISHAN VERMA",
+            "RA2411043010089": "VISHNU K",
+            "RA2411043010090": "PRATHAM GOYAL",
+            "RA2411043010091": "RETHIKA S",
+            "RA2411043010092": "AKSHAT SHRIVASTAVA",
+            "RA2411043010093": "ANIKETH R PRABHU",
+            "RA2411043010094": "MOHIT MUSTURI",
+            "RA2411043010096": "VISHAL G",
+            "RA2411043010098": "KARTHIK T",
+            "RA2411043010099": "MUDHMATHI V",
+            "RA2411043010100": "KAVIN RAJAN PILLAY",
+            "RA2411043010101": "KISHAN GV",
+            "RA2411043010102": "KAVYA SRI S",
+            "RA2411043010103": "SESHAM MARYA",
+            "RA2411043010107": "RITHIKA RS",
+            "RA2411043010108": "CHANDAN CHAURASIA",
+            "RA2411043010109": "ARGHYADEEP DAS",
+            "RA2411043010110": "DHANVIKA SAHU",
+            "RA2411043010111": "THARUN RAJ P",
+            "RA2411043010112": "DHAVALA ADITYA",
+            "RA2411043010113": "SAI SANTHOSSH M",
+            "RA2411043010114": "PREETHY K",
+            "RA2411043010115": "S TARUN RAJ",
+            "RA2411043010116": "ARVINTKRISHNA",
+        };
 
-        if (username === 'Chandan' && password === 'chandan@123') {
-          window.location.href = 'quiz.html'; // Redirect to your quiz page
-        } else {
-          document.getElementById('error').innerText = 'Invalid username or password';
+        function login() {
+            const regno = document.getElementById('regno').value;
+            const name = document.getElementById('name').value;
+
+            if (users[regno] && users[regno] === name) {
+                alert('Login successful!');
+            } else {
+                alert('Invalid registration number or name.');
+            }
         }
-      }
     </script>
-  </body>
+</body>
 </html>
