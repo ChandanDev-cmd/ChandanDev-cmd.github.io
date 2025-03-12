@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz App</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body
+    style="
+      background-image: url('https://source.unsplash.com/1600x900/?technology');
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    "
+  >
+    <div
+      class="outer-container"
+      style="
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 20px;
+        border-radius: 15px;
+        max-width: 900px;
+        width: 90%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <div
+        class="quiz-container"
+        style="
+          background-color: rgba(255, 255, 255, 0.9);
+          padding: 20px;
+          border-radius: 10px;
+          width: 100%;
+        "
+      >
+        <h1
+          style="
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-align: center;
+            font-size: 50px;
+            color: #af4ae2;
+          "
+        >
+          Quiz App
+        </h1>
+        <div id="quiz">
+          <p id="question" style="font-size: 40px; text-align: center">
+            Question will appear here
+          </p>
+          <div id="options" class="zigzag" style="text-align: center"></div>
+          <p id="timer" style="font-size: 40px; text-align: center">
+            Time Left: 30s
+          </p>
+          <div style="display: flex; justify-content: center">
+            <button
+              id="next-btn"
+              onclick="nextQuestion()"
+              style="
+                display: none;
+                font-size: 24px;
+                padding: 15px 30px;
+                background-color: #007bff;
+                color: white;
+                border-radius: 10px;
+                border: none;
+                cursor: pointer;
+              "
+            >
+              Next Question
+            </button>
+          </div>
+        </div>
+        <div id="result" style="text-align: center"></div>
+        <div
+          id="incorrect-questions"
+          style="display: none; text-align: center"
+        ></div>
+      </div>
+    </div>
+
+    <script>
+      let currentQuestionIndex = 0;
+      let score = 0;
+      let timeLeft = 15;
+      let timer;
+      let optionTimer;
+      let zoomLevel = 50;
+      let zoomingIn = true;
+
+      const questions = [
+        {
+          question: "The feature for data encapsulation is",
+          correct_answer: " Overloading",
+          incorrect_answers: [" Abstraction", "Inheritance", " Polymorphismm"],
+        },
+        {
+          question:
+            "Which among the following is the language that supports classes but not polymorphism?",
+          correct_answer: "Ada",
+          incorrect_answers: ["Small talk", " Java ", "File Management"],
+        },
+        {
+          question: "Choose the right option: string *x, y;",
+          correct_answer: " x is a pointer to a string, y is a string ",
+          incorrect_answers: [
+            "y is a pointer to a string, x is a string ",
+            "Both C and y are pointers to string types ",
+            "Priority Scheduly is a pointer to a stringg",
+          ],
+        },
+        {
+          question: "Data structure is defined as",
+          correct_answer: "A way to store and organize datae",
+          incorrect_answers: [
+            "A programming language ",
+            " A type of computer hardware",
+            "Priority Scheduling",
+          ],
+        },
+        {
+          question: "A graph is a tree if and only if",
+          correct_answer: "Contains no cycles",
+          incorrect_answers: [" Directed graph", "Planer", "Priority"],
+        },
+        {
+          question: "How can we initialize an array in C++?",
+          correct_answer: "(C) int arr[2] = {10,20}",
+          incorrect_answers: [
+            "int arr[2] = (10,2) ",
+            "int arr (2) = {10,20} ",
+            "int arr(2) = (10,20)",
+          ],
+        },
+        {
+          question:
+            "The number of nodes in a complete binary tree of level 5 is",
+          correct_answer: "A high paging activity",
+          incorrect_answers: ["64", "67", "32"],
+        },
+        {
+          question: "The compiler is a lexical analyzer in the ___ phase",
+          correct_answer: "Second ",
+          incorrect_answers: [" Third", "first", "last"],
+        },
+        {
+          question:
+            "The programming language that has the ability to create new data types is called __________.",
+          correct_answer: " Extensible",
+          incorrect_answers: ["Encapsulated", " Overloaded", "Repressible"],
+        },
+        {
+          question: "When do we define the default values for a function?",
+          correct_answer: " When a function is declared ",
+          incorrect_answers: [
+            " When a function is defined",
+            " When a function is called",
+            " When the scope of the function is over",
+          ],
+        },
+      ];
+
+      let incorrectQuestions = [];
+
+      function startTimer() {
+        timeLeft = 30;
+        document.getElementById("timer").innerText = `Time Left: ${timeLeft}s`;
+        timer = setInterval(() => {
+          timeLeft--;
+          document.getElementById(
+            "timer"
+          ).innerText = `Time Left: ${timeLeft}s`;
+
+          zoomLevel = zoomingIn ? zoomLevel + 1 : zoomLevel - 1;
+          if (zoomLevel >= 30) zoomingIn = false;
+          if (zoomLevel <= 20) zoomingIn = true;
+          document.getElementById("timer").style.fontSize = `${zoomLevel}px`;
+
+          if (timeLeft <= 0) {
+            clearInterval(timer);
+            clearInterval(optionTimer);
+            nextQuestion();
+          }
+        }, 1000);
+      }
+
+      function startOptionZigzag() {
+        let position = 0;
+        optionTimer = setInterval(() => {
+          const buttons = document.querySelectorAll(".option");
+          buttons.forEach((button, index) => {
+            button.style.transform = `translateX(${
+              Math.sin(position + index) * 15
+            }px)`;
+          });
+          position += 0.3;
+        }, 40);
+      }
+
+      function displayQuestion() {
+        if (currentQuestionIndex < questions.length) {
+          const question = questions[currentQuestionIndex];
+
+          document.getElementById("question").innerHTML = question.question;
+
+          let options = [...question.incorrect_answers];
+          const correctIndex = Math.floor(Math.random() * (options.length + 1));
+          options.splice(correctIndex, 0, question.correct_answer);
+
+          document.getElementById("options").innerHTML = "";
+          options.forEach((option) => {
+            const button = document.createElement("button");
+            button.innerHTML = option;
+            button.classList.add("option");
+            button.style.padding = "20px";
+            button.style.fontSize = "24px";
+            button.onclick = () => checkAnswer(option);
+            document.getElementById("options").appendChild(button);
+          });
+
+          document.getElementById("next-btn").style.display = "none";
+          startTimer();
+          startOptionZigzag();
+        } else {
+          showResult();
+        }
+      }
+
+      function checkAnswer(selectedAnswer) {
+        clearInterval(timer);
+        clearInterval(optionTimer);
+        const question = questions[currentQuestionIndex];
+        const correctAnswer = question.correct_answer;
+        if (selectedAnswer !== correctAnswer) {
+          incorrectQuestions.push(question);
+        } else {
+          score++;
+        }
+        document.getElementById("next-btn").style.display = "block";
+      }
+
+      function nextQuestion() {
+        clearInterval(timer);
+        clearInterval(optionTimer);
+        currentQuestionIndex++;
+        displayQuestion();
+      }
+
+      function showResult() {
+        document.getElementById("quiz").style.display = "none";
+        document.getElementById(
+          "result"
+        ).innerHTML = `<h2>Your Score: ${score}/10</h2>`;
+        showIncorrectQuestions();
+      }
+
+      function showIncorrectQuestions() {
+        if (incorrectQuestions.length > 0) {
+          const incorrectDiv = document.getElementById("incorrect-questions");
+          incorrectDiv.style.display = "block";
+          incorrectDiv.innerHTML = "<h3>Incorrect Questions:</h3>";
+          incorrectQuestions.forEach((q) => {
+            incorrectDiv.innerHTML += `<p>${q.question} (Correct Answer: ${q.correct_answer})</p>`;
+          });
+        }
+      }
+
+      displayQuestion();
+    </script>
+  </body>
+</html>
