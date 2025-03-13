@@ -48,75 +48,37 @@
   <body>
     <div class="login-container">
       <h2>Student Login</h2>
-      <input type="text" id="regNo" placeholder="Registration Number" />
-      <input type="text" id="name" placeholder="Name" />
+      <input type="text" id="username" placeholder="Registration Number" />
+      <input type="password" id="password" placeholder="Password" />
       <button onclick="login()">Login</button>
       <p id="error" style="color: red;"></p>
     </div>
 
     <script>
       const students = [
-        { regNo: "RA2411043010062", name: "BHAVISH DESAI" },
-        { regNo: "RA2411043010063", name: "S S AVYUKTA" },
-        { regNo: "RA2411043010064", name: "ANUSHKA RISHIVANSHI" },
-        { regNo: "RA2411043010065", name: "ASHWIN SIVAKUMAR" },
-        { regNo: "RA2411043010066", name: "HOTE DEVASHREE MANGESH" },
-        { regNo: "RA2411043010067", name: "PADMESH GARADALA" },
-        { regNo: "RA2411043010068", name: "KOLLURU VEDASAI MANASA" },
-        { regNo: "RA2411043010069", name: "R MITRA" },
-        { regNo: "RA2411043010070", name: "S SRIVATHS" },
-        { regNo: "RA2411043010071", name: "SAMARTH R ANEGUNDI" },
-        { regNo: "RA2411043010072", name: "MUKKESH M R" },
-        { regNo: "RA2411043010073", name: "HARINI J" },
-        { regNo: "RA2411043010074", name: "PRADYUMNA KRISHNAN" },
-        { regNo: "RA2411043010075", name: "SHASHWAT SINGH" },
-        { regNo: "RA2411043010076", name: "ABHISHEK KUMAR SINGH" },
-        { regNo: "RA2411043010077", name: "ABHI SHIKTHA RUDRAVARAM" },
-        { regNo: "RA2411043010078", name: "MOHAMMAD AMAAN KHAN" },
-        { regNo: "RA2411043010079", name: "HIMANSHU GOLYA" },
-        { regNo: "RA2411043010080", name: "JISHNUDEB BISWAS" },
-        { regNo: "RA2411043010081", name: "BHARATH ADITHYA C A" },
-        { regNo: "RA2411043010083", name: "TUSHAR RAJ" },
-        { regNo: "RA2411043010084", name: "V PRANEEL" },
-        { regNo: "RA2411043010085", name: "PRATIKSHYA KHANDUAL" },
-        { regNo: "RA2411043010086", name: "DHARANIBALAN KARUPPIAH" },
-        { regNo: "RA2411043010087", name: "TANISHA MAAN" },
-        { regNo: "RA2411043010088", name: "ISHAN VERMA" },
-        { regNo: "RA2411043010089", name: "VISHNU K" },
-        { regNo: "RA2411043010090", name: "PRATHAM GOYAL" },
-        { regNo: "RA2411043010091", name: "RETHIKA S" },
-        { regNo: "RA2411043010092", name: "AKSHAT SHRIVASTAVA" },
-        { regNo: "RA2411043010093", name: "ANIKETH R PRABHU" },
-        { regNo: "RA2411043010094", name: "MOHIT MUSTURI" },
-        { regNo: "RA2411043010096", name: "VISHAL G" },
-        { regNo: "RA2411043010098", name: "KARTHIK I" },
-        { regNo: "RA2411043010099", name: "MADHUMATHI V" },
-        { regNo: "RA2411043010100", name: "KAVIN RAJAN PILLAY" },
-        { regNo: "RA2411043010101", name: "KISHAN GV" },
-        { regNo: "RA2411043010102", name: "KAVIYA SRI S" },
-        { regNo: "RA2411043010103", name: "SESHAM MANYA" },
-        { regNo: "RA2411043010107", name: "RITHIKA RS" },
-        { regNo: "RA2411043010108", name: "CHANDAN CHAURASIA" },
-        { regNo: "RA2411043010109", name: "ARGHYADEEP DAS" },
-        { regNo: "RA2411043010110", name: "ABHEENAV SAHU" },
-        { regNo: "RA2411043010111", name: "THARUN RAAJ P" },
-        { regNo: "RA2411043010112", name: "DHAVALA ADITYA" },
-        { regNo: "RA2411043010113", name: "SAI SANTHOSSH M" },
-        { regNo: "RA2411043010114", name: "PREETHY K" },
-        { regNo: "RA2411043010115", name: "S TARUN RAJ" },
-        { regNo: "RA2411043010116", name: "ARAVINTHKRISHNA" }
+        "RA2411043010062", "RA2411043010063", "RA2411043010064", "RA2411043010065",
+        "RA2411043010066", "RA2411043010067", "RA2411043010068", "RA2411043010069",
+        "RA2411043010070", "RA2411043010071", "RA2411043010072", "RA2411043010073",
+        "RA2411043010074", "RA2411043010075", "RA2411043010076", "RA2411043010077",
+        "RA2411043010078", "RA2411043010079", "RA2411043010080", "RA2411043010081",
+        "RA2411043010083", "RA2411043010084", "RA2411043010085", "RA2411043010086",
+        "RA2411043010087", "RA2411043010088", "RA2411043010089", "RA2411043010090",
+        "RA2411043010091", "RA2411043010092", "RA2411043010093", "RA2411043010094",
+        "RA2411043010096", "RA2411043010098", "RA2411043010099", "RA2411043010100",
+        "RA2411043010101", "RA2411043010102", "RA2411043010103", "RA2411043010107",
+        "RA2411043010108", "RA2411043010109", "RA2411043010110", "RA2411043010111",
+        "RA2411043010112", "RA2411043010113", "RA2411043010114", "RA2411043010115",
+        "RA2411043010116"
       ];
 
       function login() {
-        const regNo = document.getElementById('regNo').value;
-        const name = document.getElementById('name').value;
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
 
-        const student = students.find(s => s.regNo === regNo && s.name.toLowerCase() === name.toLowerCase());
-
-        if (student) {
+        if (students.includes(username) && password === 'SRM@123') {
           window.location.href = 'quiz.html';
         } else {
-          document.getElementById('error').innerText = 'Invalid registration number or name';
+          document.getElementById('error').innerText = 'Invalid username or password';
         }
       }
     </script>
