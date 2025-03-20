@@ -84,19 +84,12 @@
             margin-top: 20px;
         }
 
-        #result, #incorrect-questions {
+        #timer {
+            font-size: 20px;
             text-align: center;
-            margin-top: 20px;
-        }
-
-        #incorrect-questions {
-            display: none;
-        }
-
-        #penalty-message {
-            font-size: 18px;
             color: red;
-            text-align: center;
+            font-weight: bold;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -107,23 +100,19 @@
             <div id="quiz">
                 <p id="question">Question will appear here</p>
                 <div id="options"></div>
+                <p id="timer">Time Left: 30s</p>
                 <div style="display: flex; justify-content: center;">
                     <button id="next-btn" onclick="nextQuestion()">Next Question</button>
                 </div>
             </div>
-            <p id="penalty-message"></p>
-            <div id="result"></div>
-            <div id="incorrect-questions"></div>
         </div>
     </div>
 
     <script>
         let currentQuestionIndex = 0;
         let score = 0;
-        let totalPenalty = 0;
-        let penaltyPerSwitch = 2;
-        let optionSelected = false;
-        let incorrectQuestions = [];
+        let timer;
+        let timeLeft = 30;
 
         let questions = [
             {
@@ -198,8 +187,20 @@
     },
         ];
 
+        function startTimer() {
+            timeLeft = 30;
+            document.getElementById("timer").innerText = `Time Left: ${timeLeft}s`;
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer").innerText = `Time Left: ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    nextQuestion();
+                }
+            }, 1000);
+        }
+
         function displayQuestion() {
-            optionSelected = false;
             document.getElementById("next-btn").style.display = "none";
             let questionObj = questions[currentQuestionIndex];
             document.getElementById("question").innerText = questionObj.question;
@@ -212,53 +213,26 @@
                 btn.onclick = function() { selectOption(this, index); };
                 document.getElementById("options").appendChild(btn);
             });
+            
+            clearInterval(timer);
+            startTimer();
         }
 
         function selectOption(button, selectedIndex) {
-            if (optionSelected) return;
-            optionSelected = true;
             document.querySelectorAll(".option").forEach(btn => btn.disabled = true);
             button.classList.add("selected");
-            
-            let questionObj = questions[currentQuestionIndex];
-            if (selectedIndex === questionObj.answer) {
-                score++;
-            } else {
-                incorrectQuestions.push({
-                    question: questionObj.question,
-                    userAnswer: questionObj.options[selectedIndex],
-                    correctAnswer: questionObj.options[questionObj.answer]
-                });
-            }
             document.getElementById("next-btn").style.display = "block";
         }
 
         function nextQuestion() {
+            clearInterval(timer);
             currentQuestionIndex++;
             if (currentQuestionIndex < questions.length) {
                 displayQuestion();
             } else {
-                showResult();
+                document.getElementById("quiz").innerHTML = `<h2>Quiz Completed! Your score: ${score}</h2>`;
             }
         }
-
-        function showResult() {
-            let finalScore = score - totalPenalty;
-            document.getElementById("result").innerHTML = `<h2>Your Final Score: ${finalScore} / ${questions.length}</h2>`;
-            
-            if (incorrectQuestions.length > 0) {
-                document.getElementById("incorrect-questions").style.display = "block";
-                document.getElementById("incorrect-questions").innerHTML = "<h3>Incorrect Answers:</h3>" + incorrectQuestions.map(q => `
-                    <p><b>Q:</b> ${q.question}<br>
-                    <b>Your Answer:</b> ${q.userAnswer}<br>
-                    <b>Correct Answer:</b> ${q.correctAnswer}</p>`).join('');
-            }
-        }
-
-        window.addEventListener("blur", () => {
-            totalPenalty += penaltyPerSwitch;
-            document.getElementById("penalty-message").innerText = `You changed the tab! (-${penaltyPerSwitch} points)`;
-        });
 
         displayQuestion();
     </script>
