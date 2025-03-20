@@ -84,15 +84,23 @@
             margin-top: 20px;
         }
 
-        #timer {
-            font-size: 20px;
+        #result, #incorrect-questions {
             text-align: center;
+            margin-top: 20px;
+        }
+
+        #incorrect-questions {
+            display: none;
+        }
+
+        #penalty-message {
+            font-size: 18px;
             color: red;
-            font-weight: bold;
-            margin-top: 10px;
+            text-align: center;
         }
     </style>
 </head>
+
 <body>
     <div class="outer-container">
         <div class="quiz-container">
@@ -100,65 +108,44 @@
             <div id="quiz">
                 <p id="question">Question will appear here</p>
                 <div id="options"></div>
-                <p id="timer">Time Left: 30s</p>
                 <div style="display: flex; justify-content: center;">
                     <button id="next-btn" onclick="nextQuestion()">Next Question</button>
                 </div>
             </div>
+            <p id="penalty-message"></p>
+            <div id="result"></div>
+            <div id="incorrect-questions"></div>
         </div>
     </div>
 
     <script>
         let currentQuestionIndex = 0;
         let score = 0;
-        let timer;
-        let timeLeft = 30;
+        let totalPenalty = 0;
+        let penaltyPerSwitch = 2;
+        let optionSelected = false;
+        let incorrectQuestions = [];
 
         let questions = [
-            {
-                "question": "Which header file is necessary for input/output operations in C++?",
-                "options": ["#include <iostream>", "#include <stdio.h>", "#include <conio.h>", "#include <string>"],
-                "answer": 0
-            },
-            {
-                "question": "Which operator is used to allocate memory dynamically in C++?",
-                "options": ["malloc", "alloc", "new", "create"],
-                "answer": 2
-            },
-            {
-      "question": "Which feature allows a function or operator to be used for different data types?",
+        {
+      "question": "Which header file is necessary for input/output operations in C++?",
       "options": [
-        "Inheritance",
-        "Encapsulation",
-        "Polymorphism",
-        "Overloading"
+        "#include <iostream>",
+        "#include <stdio.h>",
+        "#include <conio.h>",
+        "#include <string>"
       ],
-      "answer": 3
-    },
-    {
-      "question": "What is the correct syntax to output 'Hello World' in C++?",
-      "options": [
-        "print('Hello World');",
-        "cout << 'Hello World';",
-        "System.out.println('Hello World');",
-        "echo 'Hello World';"
-      ],
-      "answer": 1
-    },
-    {
-      "question": "Which of the following is NOT a valid access specifier in C++?",
-      "options": ["public", "private", "protected", "secured"],
-      "answer": 3
-    },
-    {
-      "question": "What is the size of an 'int' data type typically in C++ (on a 32-bit system)?",
-      "options": ["2 bytes", "4 bytes", "8 bytes", "Depends on compiler"],
-      "answer": 1
+      "answer": 0
     },
     {
       "question": "Which operator is used to allocate memory dynamically in C++?",
       "options": ["malloc", "alloc", "new", "create"],
       "answer": 2
+    },
+    {
+      "question": "What is the size of an 'int' data type typically in C++ (on a 32-bit system)?",
+      "options": ["2 bytes", "4 bytes", "8 bytes", "Depends on compiler"],
+      "answer": 1
     },
     {
       "question": "Which loop is guaranteed to execute at least once in C++?",
@@ -171,70 +158,123 @@
       "answer": 2
     },
     {
-      "question": "Which keyword is used to prevent a class from being inherited?",
-      "options": ["sealed", "final", "private", "restrict"],
-      "answer": 1
+      "question": "Which keyword is used to define a constant variable in C++?",
+      "options": ["const", "define", "final", "static"],
+      "answer": 0
     },
     {
-      "question": "What is the primary purpose of the 'friend' keyword in C++?",
+      "question": "Which of the following correctly declares an array in C++?",
       "options": [
-        "To allow access to private members",
-        "To create a global function",
-        "To define a static function",
-        "To prevent inheritance"
+        "int arr[5];",
+        "array<int> arr;",
+        "int arr;",
+        "arr = new int[5];"
       ],
       "answer": 0
     },
+    {
+      "question": "Which of the following statements is true about multiple inheritance in C++?",
+      "options": [
+        "It is not allowed in C++",
+        "It allows a class to inherit from multiple base classes",
+        "It is only allowed for abstract classes",
+        "It requires the use of virtual inheritance"
+      ],
+      "answer": 1
+    },
+    {
+      "question": "Which operator cannot be overloaded in C++?",
+      "options": ["+", "=", "::", "<<"],
+      "answer": 2
+    },
+    {
+      "question": "Which of the following is used to define a constant variable in C++?",
+      "options": ["const", "define", "final", "static"],
+      "answer": 0
+    },
+    {
+      "question": "Which keyword is used to allocate memory dynamically in C++?",
+      "options": ["malloc", "alloc", "new", "create"],
+      "answer": 2
+    }
         ];
 
-        function startTimer() {
-            timeLeft = 30;
-            document.getElementById("timer").innerText = `Time Left: ${timeLeft}s`;
-            timer = setInterval(() => {
-                timeLeft--;
-                document.getElementById("timer").innerText = `Time Left: ${timeLeft}s`;
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    nextQuestion();
-                }
-            }, 1000);
-        }
-
         function displayQuestion() {
+            optionSelected = false;
             document.getElementById("next-btn").style.display = "none";
             let questionObj = questions[currentQuestionIndex];
             document.getElementById("question").innerText = questionObj.question;
-            document.getElementById("options").innerHTML = "";
             
-            questionObj.options.forEach((option, index) => {
+            let options = [...questionObj.incorrect_answers, questionObj.correct_answer];
+            options.sort(() => Math.random() - 0.5);
+
+            document.getElementById("options").innerHTML = "";
+            options.forEach(option => {
                 let btn = document.createElement("button");
                 btn.innerText = option;
                 btn.classList.add("option");
-                btn.onclick = function() { selectOption(this, index); };
+                btn.onclick = function() { selectOption(this, option); };
                 document.getElementById("options").appendChild(btn);
             });
-            
-            clearInterval(timer);
-            startTimer();
         }
 
-        function selectOption(button, selectedIndex) {
-            document.querySelectorAll(".option").forEach(btn => btn.disabled = true);
+        function selectOption(button, selectedAnswer) {
+            if (optionSelected) return;
+            optionSelected = true;
+            
+            document.querySelectorAll(".option").forEach(btn => {
+                btn.disabled = true;
+                btn.style.cursor = "not-allowed";
+            });
+
             button.classList.add("selected");
+
+            let questionObj = questions[currentQuestionIndex];
+            if (selectedAnswer === questionObj.correct_answer) {
+                score++;
+            } else {
+                incorrectQuestions.push({ 
+                    question: questionObj.question, 
+                    userAnswer: <b>${selectedAnswer}</b>, 
+                    correctAnswer: <b>${questionObj.correct_answer}</b> 
+                });
+            }
+
             document.getElementById("next-btn").style.display = "block";
         }
 
         function nextQuestion() {
-            clearInterval(timer);
             currentQuestionIndex++;
             if (currentQuestionIndex < questions.length) {
                 displayQuestion();
             } else {
-                document.getElementById("quiz").innerHTML = `<h2>Quiz Completed! Your score: ${score}</h2>`;
+                showResult();
             }
         }
 
+        function showResult() {
+            let finalScore = score - totalPenalty;
+            document.getElementById("result").innerHTML = <h2>Your Final Score: ${finalScore} / 10</h2>;
+
+            if (incorrectQuestions.length > 0) {
+                document.getElementById("incorrect-questions").style.display = "block";
+                document.getElementById("incorrect-questions").innerHTML = "<h3>Incorrect Answers:</h3>";
+                incorrectQuestions.forEach(q => {
+                    document.getElementById("incorrect-questions").innerHTML += 
+                        `<p><b>Q:</b> ${q.question}<br>
+                        <b>Your Answer:</b> ${q.userAnswer}<br>
+                        <b>Correct Answer:</b> ${q.correctAnswer}</p>`;
+                });
+            }
+        }
+
+        window.addEventListener("blur", () => {
+            totalPenalty += penaltyPerSwitch;
+            document.getElementById("penalty-message").innerText = You changed the tab! (-${penaltyPerSwitch} points);
+        });
+
         displayQuestion();
     </script>
+
 </body>
 </html>
