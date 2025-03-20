@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz App</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        background-image: url('https://assets.onecompiler.app/43bw5rn75/43caffn7n/WhatsApp%20Image%202025-03-20%20at%2000.35.31.jpeg');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .outer-container {
+        background-color: rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        border-radius: 15px;
+        max-width: 700px;
+        width: 79%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .quiz-container {
+        background-color: rgba(240, 250, 250, 0.9);
+        padding: 20px;
+        border-radius: 20px;
+        border: 9px solid black;
+        width: 100%;
+      }
+
+      h1 {
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+        text-align: center;
+        font-size: 50px;
+        color: #af4ae2;
+      }
+
+      #question {
+        font-size: 30px;
+        text-align: center;
+        border: 4px solid black;
+        margin-bottom: 11px;
+        padding: 9px;
+      }
+
+      .option {
+        padding: 15px;
+        font-size: 20px;
+        margin: 4px;
+        border: 4px solid black;
+        cursor: pointer;
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .option:hover {
+        transform: scale(1.1);
+      }
+
+      .option.selected {
+        background-color: blue;
+        color: white;
+        border: 3px solid blue;
+      }
+
+      #next-btn {
+        display: none;
+        font-size: 24px;
+        padding: 15px 30px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+
+      #timer {
+        font-size: 40px;
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      #result,
+      #incorrect-questions {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      #incorrect-questions {
+        display: none;
+      }
+
+      #penalty-message {
+        color: red;
+        text-align: center;
+        display: none;
+        margin-top: 5px;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="outer-container">
+      <div class="quiz-container">
+        <h1>Quiz App</h1>
+        <div id="quiz">
+          <p id="question">Question will appear here</p>
+          <div id="options" style="text-align: center;"></div>
+          <p id="timer">Time Left: 30s</p>
+          <p id="penalty-message">You are changing the slide or tab, so you lose (-2)</p>
+          <div style="display: flex; justify-content: center;">
+            <button id="next-btn" onclick="nextQuestion()">Next Question</button>
+          </div>
+        </div>
+        <div id="result"></div>
+        <div id="incorrect-questions"></div>
+      </div>
+    </div>
+
+    <script>
+      let currentQuestionIndex = 0;
+      let score = 0;
+      let timeLeft = 30;
+      let timer;
+      let questions = [
+        {
+          question: "What is the capital of France?",
+          correct_answer: "Paris",
+          incorrect_answers: ["London", "Berlin", "Madrid"]
+        },
+        {
+          question: "Which planet is known as the Red Planet?",
+          correct_answer: "Mars",
+          incorrect_answers: ["Venus", "Jupiter", "Saturn"]
+        },
+        {
+          question: "Who wrote 'Romeo and Juliet'?",
+          correct_answer: "William Shakespeare",
+          incorrect_answers: ["Charles Dickens", "Mark Twain", "Jane Austen"]
+        },
+        {
+          question: "What is the largest ocean on Earth?",
+          correct_answer: "Pacific Ocean",
+          incorrect_answers: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean"]
+        },
+        {
+          question: "What is the chemical symbol for water?",
+          correct_answer: "H2O",
+          incorrect_answers: ["CO2", "O2", "NaCl"]
+        },
+        {
+          question: "Which country is known as the Land of the Rising Sun?",
+          correct_answer: "Japan",
+          incorrect_answers: ["China", "South Korea", "Thailand"]
+        },
+        {
+          question: "What is the smallest prime number?",
+          correct_answer: "2",
+          incorrect_answers: ["1", "3", "5"]
+        },
+        {
+          question: "Who painted the Mona Lisa?",
+          correct_answer: "Leonardo da Vinci",
+          incorrect_answers: ["Vincent van Gogh", "Pablo Picasso", "Claude Monet"]
+        },
+        {
+          question: "What is the hardest natural substance on Earth?",
+          correct_answer: "Diamond",
+          incorrect_answers: ["Gold", "Iron", "Quartz"]
+        },
+        {
+          question: "Which gas is most abundant in the Earth's atmosphere?",
+          correct_answer: "Nitrogen",
+          incorrect_answers: ["Oxygen", "Carbon Dioxide", "Argon"]
+        }
+      ];
+      let incorrectQuestions = [];
+      let optionSelected = false;
+      let tabSwitchPenalty = 0;
+
+      function startTimer() {
+        timeLeft = 30;
+        document.getElementById("timer").innerText = Time Left: ${timeLeft}s;
+        timer = setInterval(() => {
+          timeLeft--;
+          document.getElementById("timer").innerText = Time Left: ${timeLeft}s;
+          if (timeLeft <= 0) {
+            clearInterval(timer);
+            nextQuestion();
+          }
+        }, 1000);
+      }
+
+      function displayQuestion() {
+        optionSelected = false;
+        document.getElementById("penalty-message").style.display = "none"; // Hide penalty message on new question
+        if (currentQuestionIndex < questions.length) {
+          const question = questions[currentQuestionIndex];
+
+          document.getElementById("question").innerHTML = question.question;
+
+          let options = [...question.incorrect_answers];
+          const correctIndex = Math.floor(Math.random() * (options.length + 1));
+          options.splice(correctIndex, 0, question.correct_answer);
+
+          document.getElementById("options").innerHTML = "";
+          options.forEach((option) => {
+            const button = document.createElement("button");
+            button.innerHTML = option;
+            button.classList.add("option");
+            button.onclick = () => {
+              if (!optionSelected) {
+                optionSelected = true;
+                button.classList.add("selected");
+                document.querySelectorAll(".option").forEach((b) => (b.disabled = true));
+                checkAnswer(option);
+              }
+            };
+            document.getElementById("options").appendChild(button);
+          });
+
+          document.getElementById("next-btn").style.display = "none";
+          startTimer();
+        } else {
+          showResult();
+        }
+      }
+
+      function checkAnswer(selectedAnswer) {
+        clearInterval(timer);
+        const question = questions[currentQuestionIndex];
+        if (selectedAnswer === question.correct_answer) {
+          score++;
+        } else {
+          incorrectQuestions.push({
+            question: question.question,
+            correctAnswer: question.correct_answer
+          });
+        }
+        document.getElementById("next-btn").style.display = "block";
+      }
+
+      function nextQuestion() {
+        currentQuestionIndex++;
+        displayQuestion();
+      }
+
+      function showResult() {
+        score -= tabSwitchPenalty; // Subtract tab switch penalties from the score
+        document.getElementById("quiz").style.display = "none";
+        document.getElementById("result").innerHTML = <h2>Your Score: ${score}/${questions.length}</h2>;
+
+        if (incorrectQuestions.length > 0) {
+          let incorrectHTML = "<h3>Incorrect Questions:</h3>";
+          incorrectQuestions.forEach((item) => {
+            incorrectHTML += <p><strong>Question:</strong> ${item.question}<br><strong>Correct Answer:</strong> ${item.correctAnswer}</p>;
+          });
+          document.getElementById("incorrect-questions").innerHTML = incorrectHTML;
+          document.getElementById("incorrect-questions").style.display = "block";
+        }
+      }
+
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) {
+          tabSwitchPenalty += 2;
+          document.getElementById("penalty-message").innerText = You are changing the slide or tab, so you lose (-${tabSwitchPenalty});
+          document.getElementById("penalty-message").style.display = "block"; // Show penalty message
+        }
+      });
+
+      displayQuestion(); // Start the quiz
+    </script>
+  </body>
+</html>
