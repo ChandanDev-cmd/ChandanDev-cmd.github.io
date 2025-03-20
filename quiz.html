@@ -130,21 +130,61 @@
       let score = 0;
       let timeLeft = 30;
       let timer;
-      let questions = [];
+      let questions = [
+        {
+          question: "What is the capital of France?",
+          correct_answer: "Paris",
+          incorrect_answers: ["London", "Berlin", "Madrid"]
+        },
+        {
+          question: "Which planet is known as the Red Planet?",
+          correct_answer: "Mars",
+          incorrect_answers: ["Venus", "Jupiter", "Saturn"]
+        },
+        {
+          question: "Who wrote 'Romeo and Juliet'?",
+          correct_answer: "William Shakespeare",
+          incorrect_answers: ["Charles Dickens", "Mark Twain", "Jane Austen"]
+        },
+        {
+          question: "What is the largest ocean on Earth?",
+          correct_answer: "Pacific Ocean",
+          incorrect_answers: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean"]
+        },
+        {
+          question: "What is the chemical symbol for water?",
+          correct_answer: "H2O",
+          incorrect_answers: ["CO2", "O2", "NaCl"]
+        },
+        {
+          question: "Which country is known as the Land of the Rising Sun?",
+          correct_answer: "Japan",
+          incorrect_answers: ["China", "South Korea", "Thailand"]
+        },
+        {
+          question: "What is the smallest prime number?",
+          correct_answer: "2",
+          incorrect_answers: ["1", "3", "5"]
+        },
+        {
+          question: "Who painted the Mona Lisa?",
+          correct_answer: "Leonardo da Vinci",
+          incorrect_answers: ["Vincent van Gogh", "Pablo Picasso", "Claude Monet"]
+        },
+        {
+          question: "What is the hardest natural substance on Earth?",
+          correct_answer: "Diamond",
+          incorrect_answers: ["Gold", "Iron", "Quartz"]
+        },
+        {
+          question: "Which gas is most abundant in the Earth's atmosphere?",
+          correct_answer: "Nitrogen",
+          incorrect_answers: ["Oxygen", "Carbon Dioxide", "Argon"]
+        }
+      ];
       let incorrectQuestions = [];
       let optionSelected = false;
       let tabSwitchPenalty = 0;
-
-      async function fetchQuestions() {
-        const response = await fetch("https://opentdb.com/api.php?amount=10&type=multiple");
-        const data = await response.json();
-        questions = data.results.map((q) => ({
-          question: q.question,
-          correct_answer: q.correct_answer,
-          incorrect_answers: q.incorrect_answers
-        }));
-        displayQuestion();
-      }
 
       function startTimer() {
         timeLeft = 30;
@@ -236,7 +276,7 @@
         }
       });
 
-      fetchQuestions();
+      displayQuestion(); // Start the quiz
     </script>
   </body>
 </html>
