@@ -6,7 +6,7 @@
     <title>Student Login</title>
     <style>
       body {
-        background-image: url('https://source.unsplash.com/1600x900/?education');
+        background-image: url('https://assets.onecompiler.app/43ccwgcy4/43ccwj5az/1000040692.png');
         background-size: cover;
         background-position: center;
         height: 100vh;
@@ -14,6 +14,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        font-family: Arial, sans-serif;
       }
       .login-container {
         background-color: rgba(0, 0, 0, 0.7);
@@ -21,6 +22,7 @@
         border-radius: 15px;
         width: 300px;
         text-align: center;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
       }
       input {
         width: 100%;
@@ -28,6 +30,7 @@
         margin: 10px 0;
         border-radius: 5px;
         border: none;
+        outline: none;
       }
       button {
         background-color: #4CAF50;
@@ -36,12 +39,17 @@
         border: none;
         border-radius: 5px;
         cursor: pointer;
+        width: 100%;
       }
       button:hover {
         background-color: #45a049;
       }
       h2 {
         color: #fff;
+      }
+      p#error {
+        color: red;
+        margin-top: 10px;
       }
     </style>
   </head>
@@ -51,7 +59,7 @@
       <input type="text" id="username" placeholder="Registration Number" />
       <input type="password" id="password" placeholder="Password" />
       <button onclick="login()">Login</button>
-      <p id="error" style="color: red;"></p>
+      <p id="error"></p>
     </div>
 
     <script>
@@ -72,13 +80,14 @@
       ];
 
       function login() {
-        const username = document.getElementById('username').value;
+        const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
-
+        const errorElement = document.getElementById('error');
+        
         if (students.includes(username) && password === 'SRM@123') {
           window.location.href = 'quiz.html';
         } else {
-          document.getElementById('error').innerText = 'Invalid username or password';
+          errorElement.innerText = 'Invalid username or password';
         }
       }
     </script>
