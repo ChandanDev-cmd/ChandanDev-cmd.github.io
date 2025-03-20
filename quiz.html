@@ -1,280 +1,242 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quiz App</title>
     <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            background-image: url('https://assets.onecompiler.app/43bw5rn75/43caa5h2r/SRM%20logo.pdf%20(1).png');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+      body {
+        margin: 0;
+        height: 100vh;
+        background-image: url('https://assets.onecompiler.app/43bw5rn75/43caffn7n/WhatsApp%20Image%202025-03-20%20at%2000.35.31.jpeg');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
-        .outer-container {
-            background-color: rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            border-radius: 15px;
-            max-width: 700px;
-            width: 80%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+      .outer-container {
+        background-color: rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        border-radius: 15px;
+        max-width: 700px;
+        width: 79%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
-        .quiz-container {
-            background-color: rgba(240, 250, 250, 0.9);
-            padding: 20px;
-            border-radius: 20px;
-            border: 10px solid black;
-            width: 100%;
-        }
+      .quiz-container {
+        background-color: rgba(240, 250, 250, 0.9);
+        padding: 20px;
+        border-radius: 20px;
+        border: 9px solid black;
+        width: 100%;
+      }
 
-        h1 {
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            text-align: center;
-            font-size: 50px;
-            color: #af4ae2;
-        }
+      h1 {
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+        text-align: center;
+        font-size: 50px;
+        color: #af4ae2;
+      }
 
-        #question {
-            font-size: 30px;
-            text-align: center;
-            border: 4px solid black;
-            margin-bottom: 11px;
-            padding: 9px;
-        }
+      #question {
+        font-size: 30px;
+        text-align: center;
+        border: 4px solid black;
+        margin-bottom: 11px;
+        padding: 9px;
+      }
 
-        .option {
-            padding: 15px;
-            font-size: 20px;
-            margin: 4px;
-            border: 4px solid black;
-            cursor: pointer;
-            transition: transform 0.3s ease-in-out;
-            display: block;
-            width: 100%;
-            background-color: white;
-            text-align: center;
-        }
+      .option {
+        padding: 15px;
+        font-size: 20px;
+        margin: 4px;
+        border: 4px solid black;
+        cursor: pointer;
+        transition: transform 0.3s ease-in-out;
+      }
 
-        .option:hover {
-            transform: scale(1.1);
-        }
+      .option:hover {
+        transform: scale(1.1);
+      }
 
-        .option.selected {
-            background-color: blue !important;
-            color: white;
-        }
+      .option.selected {
+        background-color: blue;
+        color: white;
+        border: 3px solid blue;
+      }
 
-        #next-btn {
-            display: none;
-            font-size: 24px;
-            padding: 15px 30px;
-            background-color: #007bff;
-            color: white;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            margin-top: 20px;
-        }
+      #next-btn {
+        display: none;
+        font-size: 24px;
+        padding: 15px 30px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        margin-top: 20px;
+      }
 
-        #result, #incorrect-questions {
-            text-align: center;
-            margin-top: 20px;
-        }
+      #timer {
+        font-size: 40px;
+        text-align: center;
+        margin-top: 20px;
+      }
 
-        #incorrect-questions {
-            display: none;
-        }
+      #result,
+      #incorrect-questions {
+        text-align: center;
+        margin-top: 20px;
+      }
 
-        #penalty-message {
-            font-size: 18px;
-            color: red;
-            text-align: center;
-        }
+      #incorrect-questions {
+        display: none;
+      }
+
+      #penalty-message {
+        color: red;
+        text-align: center;
+        display: none;
+        margin-top: 5px;
+        font-size: 18px;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="outer-container">
-        <div class="quiz-container">
-            <h1>Quiz App</h1>
-            <div id="quiz">
-                <p id="question">Question will appear here</p>
-                <div id="options"></div>
-                <div style="display: flex; justify-content: center;">
-                    <button id="next-btn" onclick="nextQuestion()">Next Question</button>
-                </div>
-            </div>
-            <p id="penalty-message"></p>
-            <div id="result"></div>
-            <div id="incorrect-questions"></div>
+      <div class="quiz-container">
+        <h1>Quiz App</h1>
+        <div id="quiz">
+          <p id="question">Question will appear here</p>
+          <div id="options" style="text-align: center;"></div>
+          <p id="timer">Time Left: 30s</p>
+          <p id="penalty-message">You are changing the slide or tab, so you lose (-2)</p>
+          <div style="display: flex; justify-content: center;">
+            <button id="next-btn" onclick="nextQuestion()">Next Question</button>
+          </div>
         </div>
+        <div id="result"></div>
+        <div id="incorrect-questions"></div>
+      </div>
     </div>
 
     <script>
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let totalPenalty = 0;
-        let penaltyPerSwitch = 2;
-        let optionSelected = false;
-        let incorrectQuestions = [];
+      let currentQuestionIndex = 0;
+      let score = 0;
+      let timeLeft = 30;
+      let timer;
+      let questions = [];
+      let incorrectQuestions = [];
+      let optionSelected = false;
+      let tabSwitchPenalty = 0;
 
-        let questions = [
-        {
-      "question": "Which header file is necessary for input/output operations in C++?",
-      "options": [
-        "#include <iostream>",
-        "#include <stdio.h>",
-        "#include <conio.h>",
-        "#include <string>"
-      ],
-      "answer": 0
-    },
-    {
-      "question": "Which operator is used to allocate memory dynamically in C++?",
-      "options": ["malloc", "alloc", "new", "create"],
-      "answer": 2
-    },
-    {
-      "question": "What is the size of an 'int' data type typically in C++ (on a 32-bit system)?",
-      "options": ["2 bytes", "4 bytes", "8 bytes", "Depends on compiler"],
-      "answer": 1
-    },
-    {
-      "question": "Which loop is guaranteed to execute at least once in C++?",
-      "options": [
-        "for loop",
-        "while loop",
-        "do-while loop",
-        "none of the above"
-      ],
-      "answer": 2
-    },
-    {
-      "question": "Which keyword is used to define a constant variable in C++?",
-      "options": ["const", "define", "final", "static"],
-      "answer": 0
-    },
-    {
-      "question": "Which of the following correctly declares an array in C++?",
-      "options": [
-        "int arr[5];",
-        "array<int> arr;",
-        "int arr;",
-        "arr = new int[5];"
-      ],
-      "answer": 0
-    },
-    {
-      "question": "Which of the following statements is true about multiple inheritance in C++?",
-      "options": [
-        "It is not allowed in C++",
-        "It allows a class to inherit from multiple base classes",
-        "It is only allowed for abstract classes",
-        "It requires the use of virtual inheritance"
-      ],
-      "answer": 1
-    },
-    {
-      "question": "Which operator cannot be overloaded in C++?",
-      "options": ["+", "=", "::", "<<"],
-      "answer": 2
-    },
-    {
-      "question": "Which of the following is used to define a constant variable in C++?",
-      "options": ["const", "define", "final", "static"],
-      "answer": 0
-    },
-    {
-      "question": "Which keyword is used to allocate memory dynamically in C++?",
-      "options": ["malloc", "alloc", "new", "create"],
-      "answer": 2
-    }
-        ];
-
-        function displayQuestion() {
-            optionSelected = false;
-            document.getElementById("next-btn").style.display = "none";
-            let questionObj = questions[currentQuestionIndex];
-            document.getElementById("question").innerText = questionObj.question;
-            
-            let options = [...questionObj.incorrect_answers, questionObj.correct_answer];
-            options.sort(() => Math.random() - 0.5);
-
-            document.getElementById("options").innerHTML = "";
-            options.forEach(option => {
-                let btn = document.createElement("button");
-                btn.innerText = option;
-                btn.classList.add("option");
-                btn.onclick = function() { selectOption(this, option); };
-                document.getElementById("options").appendChild(btn);
-            });
-        }
-
-        function selectOption(button, selectedAnswer) {
-            if (optionSelected) return;
-            optionSelected = true;
-            
-            document.querySelectorAll(".option").forEach(btn => {
-                btn.disabled = true;
-                btn.style.cursor = "not-allowed";
-            });
-
-            button.classList.add("selected");
-
-            let questionObj = questions[currentQuestionIndex];
-            if (selectedAnswer === questionObj.correct_answer) {
-                score++;
-            } else {
-                incorrectQuestions.push({ 
-                    question: questionObj.question, 
-                    userAnswer: <b>${selectedAnswer}</b>, 
-                    correctAnswer: <b>${questionObj.correct_answer}</b> 
-                });
-            }
-
-            document.getElementById("next-btn").style.display = "block";
-        }
-
-        function nextQuestion() {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < questions.length) {
-                displayQuestion();
-            } else {
-                showResult();
-            }
-        }
-
-        function showResult() {
-            let finalScore = score - totalPenalty;
-            document.getElementById("result").innerHTML = <h2>Your Final Score: ${finalScore} / 10</h2>;
-
-            if (incorrectQuestions.length > 0) {
-                document.getElementById("incorrect-questions").style.display = "block";
-                document.getElementById("incorrect-questions").innerHTML = "<h3>Incorrect Answers:</h3>";
-                incorrectQuestions.forEach(q => {
-                    document.getElementById("incorrect-questions").innerHTML += 
-                        `<p><b>Q:</b> ${q.question}<br>
-                        <b>Your Answer:</b> ${q.userAnswer}<br>
-                        <b>Correct Answer:</b> ${q.correctAnswer}</p>`;
-                });
-            }
-        }
-
-        window.addEventListener("blur", () => {
-            totalPenalty += penaltyPerSwitch;
-            document.getElementById("penalty-message").innerText = You changed the tab! (-${penaltyPerSwitch} points);
-        });
-
+      async function fetchQuestions() {
+        const response = await fetch("https://opentdb.com/api.php?amount=10&type=multiple");
+        const data = await response.json();
+        questions = data.results.map((q) => ({
+          question: q.question,
+          correct_answer: q.correct_answer,
+          incorrect_answers: q.incorrect_answers
+        }));
         displayQuestion();
-    </script>
+      }
 
-</body>
+      function startTimer() {
+        timeLeft = 30;
+        document.getElementById("timer").innerText = Time Left: ${timeLeft}s;
+        timer = setInterval(() => {
+          timeLeft--;
+          document.getElementById("timer").innerText = Time Left: ${timeLeft}s;
+          if (timeLeft <= 0) {
+            clearInterval(timer);
+            nextQuestion();
+          }
+        }, 1000);
+      }
+
+      function displayQuestion() {
+        optionSelected = false;
+        document.getElementById("penalty-message").style.display = "none"; // Hide penalty message on new question
+        if (currentQuestionIndex < questions.length) {
+          const question = questions[currentQuestionIndex];
+
+          document.getElementById("question").innerHTML = question.question;
+
+          let options = [...question.incorrect_answers];
+          const correctIndex = Math.floor(Math.random() * (options.length + 1));
+          options.splice(correctIndex, 0, question.correct_answer);
+
+          document.getElementById("options").innerHTML = "";
+          options.forEach((option) => {
+            const button = document.createElement("button");
+            button.innerHTML = option;
+            button.classList.add("option");
+            button.onclick = () => {
+              if (!optionSelected) {
+                optionSelected = true;
+                button.classList.add("selected");
+                document.querySelectorAll(".option").forEach((b) => (b.disabled = true));
+                checkAnswer(option);
+              }
+            };
+            document.getElementById("options").appendChild(button);
+          });
+
+          document.getElementById("next-btn").style.display = "none";
+          startTimer();
+        } else {
+          showResult();
+        }
+      }
+
+      function checkAnswer(selectedAnswer) {
+        clearInterval(timer);
+        const question = questions[currentQuestionIndex];
+        if (selectedAnswer === question.correct_answer) {
+          score++;
+        } else {
+          incorrectQuestions.push({
+            question: question.question,
+            correctAnswer: question.correct_answer
+          });
+        }
+        document.getElementById("next-btn").style.display = "block";
+      }
+
+      function nextQuestion() {
+        currentQuestionIndex++;
+        displayQuestion();
+      }
+
+      function showResult() {
+        score -= tabSwitchPenalty; // Subtract tab switch penalties from the score
+        document.getElementById("quiz").style.display = "none";
+        document.getElementById("result").innerHTML = <h2>Your Score: ${score}/${questions.length}</h2>;
+
+        if (incorrectQuestions.length > 0) {
+          let incorrectHTML = "<h3>Incorrect Questions:</h3>";
+          incorrectQuestions.forEach((item) => {
+            incorrectHTML += <p><strong>Question:</strong> ${item.question}<br><strong>Correct Answer:</strong> ${item.correctAnswer}</p>;
+          });
+          document.getElementById("incorrect-questions").innerHTML = incorrectHTML;
+          document.getElementById("incorrect-questions").style.display = "block";
+        }
+      }
+
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) {
+          tabSwitchPenalty += 2;
+          document.getElementById("penalty-message").innerText = You are changing the slide or tab, so you lose (-${tabSwitchPenalty});
+          document.getElementById("penalty-message").style.display = "block"; // Show penalty message
+        }
+      });
+
+      fetchQuestions();
+    </script>
+  </body>
 </html>
