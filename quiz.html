@@ -188,10 +188,10 @@
 
       function startTimer() {
         timeLeft = 30;
-        document.getElementById("timer").innerText = Time Left: ${timeLeft}s;
+        document.getElementById("timer").innerText = `Time Left: ${timeLeft}s`;
         timer = setInterval(() => {
           timeLeft--;
-          document.getElementById("timer").innerText = Time Left: ${timeLeft}s;
+          document.getElementById("timer").innerText = `Time Left: ${timeLeft}s`;
           if (timeLeft <= 0) {
             clearInterval(timer);
             nextQuestion();
@@ -256,12 +256,12 @@
       function showResult() {
         score -= tabSwitchPenalty; // Subtract tab switch penalties from the score
         document.getElementById("quiz").style.display = "none";
-        document.getElementById("result").innerHTML = <h2>Your Score: ${score}/${questions.length}</h2>;
+        document.getElementById("result").innerHTML = `<h2>Your Score: ${score}/${questions.length}</h2>`;
 
         if (incorrectQuestions.length > 0) {
           let incorrectHTML = "<h3>Incorrect Questions:</h3>";
           incorrectQuestions.forEach((item) => {
-            incorrectHTML += <p><strong>Question:</strong> ${item.question}<br><strong>Correct Answer:</strong> ${item.correctAnswer}</p>;
+            incorrectHTML += `<p><strong>Question:</strong> ${item.question}<br><strong>Correct Answer:</strong> ${item.correctAnswer}</p>`;
           });
           document.getElementById("incorrect-questions").innerHTML = incorrectHTML;
           document.getElementById("incorrect-questions").style.display = "block";
@@ -271,7 +271,7 @@
       document.addEventListener("visibilitychange", function () {
         if (document.hidden) {
           tabSwitchPenalty += 2;
-          document.getElementById("penalty-message").innerText = You are changing the slide or tab, so you lose (-${tabSwitchPenalty});
+          document.getElementById("penalty-message").innerText = `You are changing the slide or tab, so you lose (-${tabSwitchPenalty})`;
           document.getElementById("penalty-message").style.display = "block"; // Show penalty message
         }
       });
