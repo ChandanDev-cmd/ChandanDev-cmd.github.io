@@ -7,13 +7,15 @@
     <style>
       body {
         margin: 0;
-        height: 100vh;
+        min-height: 100vh;
         background-image: url('https://assets.onecompiler.app/43bw5rn75/43caffn7n/WhatsApp%20Image%202025-03-20%20at%2000.35.31.jpeg');
         background-size: cover;
         background-position: center;
         display: flex;
         justify-content: center;
-        align-items: center;
+        align-items: flex-start;
+        padding: 20px 0;
+        font-family: 'Times New Roman', cursive, sans-serif;
       }
 
       .outer-container {
@@ -21,10 +23,8 @@
         padding: 20px;
         border-radius: 15px;
         max-width: 700px;
-        width: 79%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        width: 90%;
+        margin: 20px auto;
       }
 
       .quiz-container {
@@ -36,14 +36,14 @@
       }
 
       h1 {
-        font-family: 'Comic Sans MS', cursive, sans-serif;
         text-align: center;
-        font-size: 50px;
+        font-size: 36px;
         color: #af4ae2;
+        margin-top: 0;
       }
 
       #question {
-        font-size: 30px;
+        font-size: 24px;
         text-align: center;
         border: 4px solid black;
         margin-bottom: 11px;
@@ -51,8 +51,8 @@
       }
 
       .option {
-        padding: 15px;
-        font-size: 20px;
+        padding: 12px;
+        font-size: 18px;
         margin: 4px;
         border: 4px solid black;
         cursor: pointer;
@@ -60,7 +60,7 @@
       }
 
       .option:hover {
-        transform: scale(1.1);
+        transform: scale(1.05);
       }
 
       .option.selected {
@@ -69,31 +69,67 @@
         border: 3px solid blue;
       }
 
-      #next-btn {
-        display: none;
-        font-size: 24px;
-        padding: 15px 30px;
+      #next-btn, #back-btn, #skip-btn, #submit-btn {
+        font-size: 20px;
+        padding: 12px 25px;
         background-color: #007bff;
         color: white;
-        border-radius: 10px;
+        border-radius: 8px;
         border: none;
         cursor: pointer;
-        margin-top: 20px;
+        margin-top: 15px;
+      }
+
+      #next-btn {
+        display: none;
+      }
+
+      #back-btn {
+        background-color: #6c757d;
+      }
+
+      #skip-btn {
+        background-color: #ffc107;
+        color: black;
+      }
+
+      #submit-btn {
+        background-color: #28a745;
+        display: none;
+      }
+
+      .button-container {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
       }
 
       #timer {
-        font-size: 40px;
+        font-size: 32px;
         text-align: center;
-        margin-top: 20px;
+        margin-top: 15px;
       }
 
-      #result,
-      #incorrect-questions {
+      #final-score {
+        font-size: 28px;
+        color: #af4ae2;
+        font-weight: bold;
         text-align: center;
-        margin-top: 20px;
+        margin: 15px 0;
+        padding: 8px;
+        border: 3px solid black;
+        background-color: rgba(240, 250, 250, 0.9);
       }
 
-      #incorrect-questions {
+      .negative-score {
+        color: red;
+      }
+
+      #incorrect-questions,
+      #skipped-questions {
+        text-align: center;
+        margin-top: 15px;
         display: none;
       }
 
@@ -102,7 +138,62 @@
         text-align: center;
         display: none;
         margin-top: 5px;
-        font-size: 18px;
+        font-size: 16px;
+      }
+
+      .question-status {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+
+      .status-dot {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 2px solid black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .answered {
+        background-color: green;
+        color: white;
+      }
+
+      .unanswered {
+        background-color: yellow;
+      }
+
+      .current {
+        border: 3px solid red;
+      }
+
+      .skipped {
+        background-color: orange;
+      }
+     
+      .question-review {
+        background-color: #f8f9fa;
+        border-left: 4px solid #6c757d;
+        padding: 10px;
+        margin: 10px 0;
+        text-align: left;
+      }
+
+      .wrong-answer {
+        color: #dc3545;
+        font-weight: bold;
+      }
+
+      .correct-answer {
+        color: #28a745;
+        font-weight: bold;
       }
     </style>
   </head>
@@ -112,20 +203,40 @@
       <div class="quiz-container">
         <h1>Quiz App</h1>
         <div id="quiz">
+          <div class="question-status" id="question-status"></div>
           <p id="question">Question will appear here</p>
           <div id="options" style="text-align: center;"></div>
           <p id="timer">Time Left: 30s</p>
           <p id="penalty-message">You are changing the slide or tab, so you lose (-2)</p>
-          <div style="display: flex; justify-content: center;">
+          <div class="button-container">
+            <button id="back-btn" onclick="prevQuestion()">Back</button>
+            <button id="skip-btn" onclick="skipQuestion()">Skip</button>
+            <button id="submit-btn" onclick="submitAnswer()">Submit</button>
             <button id="next-btn" onclick="nextQuestion()">Next Question</button>
           </div>
         </div>
         <div id="result"></div>
         <div id="incorrect-questions"></div>
+        <div id="skipped-questions"></div>
       </div>
     </div>
 
     <script>
+      // Disable right click and developer tools
+      document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+      });
+     
+      document.onkeydown = function(e) {
+        if (e.key === "F12" ||
+            (e.ctrlKey && e.shiftKey && e.key === "I") ||
+            (e.ctrlKey && e.shiftKey && e.key === "J") ||
+            (e.ctrlKey && e.key === "U")) {
+          e.preventDefault();
+          return false;
+        }
+      };
+
       let currentQuestionIndex = 0;
       let score = 0;
       let timeLeft = 30;
@@ -138,13 +249,13 @@
         },
         {
           question: "What is an AVL tree?",
-          correct_answer: "a tree which is self balanced and  a height difference almost 1",
-          incorrect_answers: ["a tree which is unbalanced and  a height difference of 1", "a tree with atmost 3 children", "a tree with three children"]
+          correct_answer: "a tree which is self balanced and a height difference almost 1",
+          incorrect_answers: ["a tree which is unbalanced and a height difference of 1", "a tree with atmost 3 children", "a tree with three children"]
         },
         {
           question: "What is a dequeue?",
           correct_answer: "A queue with insert/delete defined for both front and rear ends of the queue",
-          incorrect_answers: ["A queue implemented with a doubly linked list", " A queue with insert/delete defined for front side of the queue", "A queue implemented with both singly and doubly linked lists"]
+          incorrect_answers: ["A queue implemented with a doubly linked list", "A queue with insert/delete defined for front side of the queue", "A queue implemented with both singly and doubly linked lists"]
         },
         {
           question: "Which of the following is not the application of stack?",
@@ -152,12 +263,12 @@
           incorrect_answers: ["Compiler Syntax Analyzer", "Tracking of local variables at run time", "A parentheses balancing program"]
         },
         {
-          question: ". A data structure in which elements can be inserted or deleted at/from both ends but not in the middle is?",
-          correct_answer: " Dequeue",
+          question: "A data structure in which elements can be inserted or deleted at/from both ends but not in the middle is?",
+          correct_answer: "Dequeue",
           incorrect_answers: ["Queue", "Priority queue", "Circular queue"]
         },
         {
-          question: ". Heap can be used as ________________",
+          question: "Heap can be used as ________________",
           correct_answer: "Priority queue",
           incorrect_answers: ["Stack", "A decreasing order array", "Normal Array"]
         },
@@ -179,12 +290,45 @@
         {
           question: "Which of the following ways can be used to represent a graph?",
           correct_answer: "Adjacency List and Adjacency Matrix",
-          incorrect_answers: ["Incidence Matrix", "Adjacency List", "No way to represent  "]
+          incorrect_answers: ["Incidence Matrix", "Adjacency List", "No way to represent"]
         }
       ];
       let incorrectQuestions = [];
+      let skippedQuestionsList = [];
       let optionSelected = false;
       let tabSwitchPenalty = 0;
+      let answeredQuestions = Array(questions.length).fill(false);
+      let skippedQuestions = Array(questions.length).fill(false);
+      let correctlyAnswered = Array(questions.length).fill(false);
+      let currentSelectedAnswer = null;
+
+      function updateQuestionStatus() {
+        const statusContainer = document.getElementById("question-status");
+        statusContainer.innerHTML = "";
+       
+        questions.forEach((_, index) => {
+          const dot = document.createElement("div");
+          dot.className = "status-dot";
+         
+          if (index === currentQuestionIndex) {
+            dot.classList.add("current");
+          } else if (answeredQuestions[index]) {
+            dot.classList.add("answered");
+          } else if (skippedQuestions[index]) {
+            dot.classList.add("skipped");
+          } else {
+            dot.classList.add("unanswered");
+          }
+         
+          dot.textContent = index + 1;
+          dot.onclick = () => {
+            currentQuestionIndex = index;
+            displayQuestion();
+          };
+         
+          statusContainer.appendChild(dot);
+        });
+      }
 
       function startTimer() {
         timeLeft = 30;
@@ -201,10 +345,17 @@
 
       function displayQuestion() {
         optionSelected = false;
-        document.getElementById("penalty-message").style.display = "none"; // Hide penalty message on new question
+        currentSelectedAnswer = null;
+        document.getElementById("penalty-message").style.display = "none";
+        updateQuestionStatus();
+       
+        document.getElementById("back-btn").style.display = currentQuestionIndex > 0 ? "block" : "none";
+        document.getElementById("skip-btn").style.display = "block";
+        document.getElementById("submit-btn").style.display = "none";
+        document.getElementById("next-btn").style.display = "none";
+       
         if (currentQuestionIndex < questions.length) {
           const question = questions[currentQuestionIndex];
-
           document.getElementById("question").innerHTML = question.question;
 
           let options = [...question.incorrect_answers];
@@ -217,35 +368,61 @@
             button.innerHTML = option;
             button.classList.add("option");
             button.onclick = () => {
-              if (!optionSelected) {
-                optionSelected = true;
-                button.classList.add("selected");
-                document.querySelectorAll(".option").forEach((b) => (b.disabled = true));
-                checkAnswer(option);
-              }
+              document.querySelectorAll(".option").forEach((opt) => {
+                opt.classList.remove("selected");
+              });
+              button.classList.add("selected");
+              currentSelectedAnswer = option;
+              document.getElementById("submit-btn").style.display = "block";
+              document.getElementById("skip-btn").style.display = "none";
             };
             document.getElementById("options").appendChild(button);
           });
 
-          document.getElementById("next-btn").style.display = "none";
           startTimer();
         } else {
           showResult();
         }
       }
 
-      function checkAnswer(selectedAnswer) {
-        clearInterval(timer);
-        const question = questions[currentQuestionIndex];
-        if (selectedAnswer === question.correct_answer) {
-          score++;
-        } else {
-          incorrectQuestions.push({
-            question: question.question,
-            correctAnswer: question.correct_answer
-          });
+      function submitAnswer() {
+        if (currentSelectedAnswer) {
+          clearInterval(timer);
+          answeredQuestions[currentQuestionIndex] = true;
+          skippedQuestions[currentQuestionIndex] = false;
+          updateQuestionStatus();
+         
+          const question = questions[currentQuestionIndex];
+          if (currentSelectedAnswer === question.correct_answer) {
+            // Only increase score if this question wasn't already answered correctly
+            if (!correctlyAnswered[currentQuestionIndex]) {
+              score++;
+              correctlyAnswered[currentQuestionIndex] = true;
+            }
+          } else {
+            // If they had previously answered this correctly but now got it wrong,
+            // we need to decrease the score
+            if (correctlyAnswered[currentQuestionIndex]) {
+              score--;
+              correctlyAnswered[currentQuestionIndex] = false;
+            }
+           
+            // Add to incorrect questions if not already there
+            const alreadyIncorrect = incorrectQuestions.some(
+              item => item.question === question.question
+            );
+            if (!alreadyIncorrect) {
+              incorrectQuestions.push({
+                question: question.question,
+                correctAnswer: question.correct_answer,
+                yourAnswer: currentSelectedAnswer
+              });
+            }
+          }
+          document.getElementById("next-btn").style.display = "block";
+          document.getElementById("submit-btn").style.display = "none";
+          document.querySelectorAll(".option").forEach((b) => (b.disabled = true));
         }
-        document.getElementById("next-btn").style.display = "block";
       }
 
       function nextQuestion() {
@@ -253,18 +430,74 @@
         displayQuestion();
       }
 
-      function showResult() {
-        score -= tabSwitchPenalty; // Subtract tab switch penalties from the score
-        document.getElementById("quiz").style.display = "none";
-        document.getElementById("result").innerHTML = `<h2>Your Score: ${score}/${questions.length}</h2>`;
+      function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+          currentQuestionIndex--;
+          displayQuestion();
+        }
+      }
 
+      function skipQuestion() {
+        clearInterval(timer);
+        skippedQuestions[currentQuestionIndex] = true;
+        answeredQuestions[currentQuestionIndex] = false;
+       
+        const question = questions[currentQuestionIndex];
+        const alreadySkipped = skippedQuestionsList.some(
+          item => item.question === question.question
+        );
+        if (!alreadySkipped) {
+          skippedQuestionsList.push({
+            question: question.question,
+            correctAnswer: question.correct_answer
+          });
+        }
+       
+        updateQuestionStatus();
+        currentQuestionIndex++;
+        displayQuestion();
+      }
+
+      function showResult() {
+        // Calculate final score with penalties (can be negative)
+        const finalScore = score - tabSwitchPenalty;
+       
+        document.getElementById("quiz").style.display = "none";
+       
+        // Display total score with penalty information if any
+        let scoreHTML = `<div id="final-score" class="${finalScore < 0 ? 'negative-score' : ''}">Your Score: ${finalScore}/${questions.length}</div>`;
+        if (tabSwitchPenalty > 0) {
+          scoreHTML += `<p style="text-align: center; color: red;">(Penalty applied: -${tabSwitchPenalty} for tab switching)</p>`;
+        }
+        document.getElementById("result").innerHTML = scoreHTML;
+
+        // Display incorrect questions
         if (incorrectQuestions.length > 0) {
-          let incorrectHTML = "<h3>Incorrect Questions:</h3>";
+          let incorrectHTML = "<h3>Incorrect Answers:</h3>";
           incorrectQuestions.forEach((item) => {
-            incorrectHTML += `<p><strong>Question:</strong> ${item.question}<br><strong>Correct Answer:</strong> ${item.correctAnswer}</p>`;
+            incorrectHTML += `
+              <div class="question-review">
+                <p><strong>Question:</strong> ${item.question}</p>
+                <p class="wrong-answer">Your answer: ${item.yourAnswer}</p>
+                <p class="correct-answer">Correct answer: ${item.correctAnswer}</p>
+              </div>`;
           });
           document.getElementById("incorrect-questions").innerHTML = incorrectHTML;
           document.getElementById("incorrect-questions").style.display = "block";
+        }
+
+        // Display skipped questions
+        if (skippedQuestionsList.length > 0) {
+          let skippedHTML = `<h3>You skipped ${skippedQuestionsList.length} questions:</h3>`;
+          skippedQuestionsList.forEach((item) => {
+            skippedHTML += `
+              <div class="question-review">
+                <p><strong>Question:</strong> ${item.question}</p>
+                <p class="correct-answer">Correct answer: ${item.correctAnswer}</p>
+              </div>`;
+          });
+          document.getElementById("skipped-questions").innerHTML = skippedHTML;
+          document.getElementById("skipped-questions").style.display = "block";
         }
       }
 
@@ -272,11 +505,12 @@
         if (document.hidden) {
           tabSwitchPenalty += 2;
           document.getElementById("penalty-message").innerText = `You are changing the slide or tab, so you lose (-${tabSwitchPenalty})`;
-          document.getElementById("penalty-message").style.display = "block"; // Show penalty message
+          document.getElementById("penalty-message").style.display = "block";
         }
       });
 
-      displayQuestion(); // Start the quiz
+      // Start the quiz
+      displayQuestion();
     </script>
   </body>
 </html>
