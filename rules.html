@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Rules</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .rules-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            text-align: left;
+            max-width: 600px;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        ul {
+            text-align: left;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .start-btn {
+            background: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .start-btn:hover {
+            background: #219150;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="rules-box">
+        <h1>📜 Quiz Rules</h1>
+        <ul>
+            <li>If you switch tabs, you will receive a penalty of -2 points.</li>
+            <li>You will get only 30 seconds for each question.</li>
+            <li>There will be a total of 10 questions, meaning you will have 300 seconds in total.</li>
+            <li>At the end, you will see how many questions you answered correctly, incorrectly, and how many you skipped.</li>
+            <li>You will be able to see your final score only after attempting all the questions.</li>
+        </ul>
+        <a href="quiz.html">
+            <button class="start-btn">🚀 Start Quiz</button>
+        </a>
+    </div>
+
+    <script>
+        let penalty = 0;
+
+       
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                alert("⚠️ You switched tabs! A penalty of -2 points will be applied.");
+                penalty -= 2;
+            }
+        });
+    </script>
+
+</body>
+</html>
