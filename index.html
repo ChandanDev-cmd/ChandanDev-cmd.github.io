@@ -1,4 +1,4 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>   
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -61,7 +61,6 @@
     <button onclick="login()">Login</button>
     <p id="error"></p>
   </div>
-
   <script>
     const students = [
       "RA2411043010062","RA2411043010063","RA2411043010064","RA2411043010065",
@@ -83,11 +82,9 @@
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
       const errorElement = document.getElementById('error');
-
-      // Validation
       if (students.includes(username) && password === 'SRM@123') {
-        // ✅ Redirect to quiz page
-        window.location.href = "Quiz.html";
+        // Redirecting to rules page
+        window.location.href = "rules.html";
       } else {
         errorElement.innerText = "Invalid username or password";
       }
