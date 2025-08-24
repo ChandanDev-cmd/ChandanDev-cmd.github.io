@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz Rules</title>
+  <style>
+    :root{
+      --bg:#0b0b0f;
+      --card:#121218;
+      --ink:#e6e6f0;
+      --muted:#9aa0a6;
+      --accent:#00e0ff;
+      --warn:#ffcc00;
+      --cta1:#ff3d71;
+      --cta2:#ff8f1f;
+      --stroke:#23232e;
+    }
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(60vw 60vw at 20% -10%, #0f1a22 0%, transparent 60%),
+        radial-gradient(50vw 50vw at 120% 120%, #1a0f22 0%, transparent 60%),
+        var(--bg);
+      color:var(--ink);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .rules{
+      width:min(820px, 100%);
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.2)) , var(--card);
+      border:1px solid var(--stroke);
+      border-radius:0;
+      box-shadow:
+        0 0 0 1px rgba(0,224,255,0.06) inset,
+        0 20px 60px rgba(0,0,0,0.55);
+      padding:28px;
+      outline:2px solid rgba(0,224,255,0.10);
+      outline-offset:-10px;
+      animation:pop .5s ease-out;
+    }
+    @keyframes pop { from{transform:scale(.98);opacity:.0} to{transform:scale(1);opacity:1} }
+    .header{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      border-bottom:1px solid var(--stroke);
+      padding-bottom:16px;
+      margin-bottom:18px;
+    }
+    .logo{
+      width:44px;height:44px;display:grid;place-items:center;
+      background:linear-gradient(135deg, var(--accent), #5bffea);
+      color:#001319;font-weight:900;border:1px solid #66f2ff;
+      border-radius:0;
+      box-shadow:0 0 24px rgba(0,224,255,.35);
+      letter-spacing:.5px;
+    }
+    .title{
+      line-height:1.15;
+    }
+    .title h1{
+      font-size:22px;margin:0 0 4px 0;letter-spacing:.4px;
+    }
+    .title p{
+      margin:0;color:var(--muted);font-size:14px;
+    }
+    .badges{
+      display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 18px 0;
+    }
+    .badge{
+      font-size:12px;letter-spacing:.3px;
+      padding:6px 10px;border:1px solid var(--stroke);
+      background:rgba(0,224,255,0.08);
+      color:#b6f7ff;
+      border-radius:0;
+    }
+    .badge.warn{ background:rgba(255,204,0,0.10); color:#ffe57a; border-color:#2b2b15; }
+    ol{
+      counter-reset:item;
+      display:grid;gap:10px;margin:0;padding:0;list-style:none;
+    }
+    li{
+      position:relative;
+      display:grid;grid-template-columns:56px 1fr;align-items:start;
+      gap:14px;
+      padding:14px 12px;
+      background:rgba(255,255,255,0.03);
+      border:1px solid var(--stroke);
+      border-radius:0;
+      transition:transform .18s ease, background .18s ease, border-color .18s ease;
+    }
+    li:hover{
+      transform:translateX(6px);
+      border-color:rgba(0,224,255,0.22);
+      background:rgba(0,224,255,0.06);
+    }
+    li::before{
+      counter-increment:item;
+      content: counter(item, decimal-leading-zero);
+      display:grid;place-items:center;
+      width:56px;height:56px;
+      color:#001319;font-weight:800;
+      background:linear-gradient(135deg, var(--accent), #60f3ff);
+      border:1px solid #66f2ff;
+      border-radius:0;
+      box-shadow:0 0 18px rgba(0,224,255,.35);
+    }
+    .point{
+      font-size:16px;line-height:1.55;margin-top:2px;
+    }
+    .hl{ color:#b6f7ff; font-weight:700; }
+    .ok{ color:#7CFFB2; font-weight:700; }
+    .no{ color:#ff9aa2; font-weight:700; }
+    .footer{
+      border-top:1px solid var(--stroke);
+      margin-top:22px;padding-top:16px;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    }
+    .note{color:var(--muted);font-size:13px}
+    .agree{
+      display:flex;align-items:center;gap:8px;color:var(--muted);font-size:14px;
+      user-select:none;cursor:pointer;
+    }
+    .agree input{ accent-color:var(--accent); width:18px; height:18px; }
+    .cta{
+      appearance:none;border:none;cursor:not-allowed;
+      padding:14px 22px;font-weight:800;font-size:15px;letter-spacing:.4px;
+      color:#0d0b10;background:linear-gradient(90deg, var(--cta1), var(--cta2));
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:0;
+      box-shadow:0 8px 26px rgba(255,120,40,.35);
+      transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease, filter .15s ease;
+      opacity:.6; filter:saturate(.8);
+    }
+    .cta.enabled{
+      cursor:pointer; opacity:1; filter:none;
+    }
+    .cta.enabled:hover{ transform:translateY(-2px); box-shadow:0 12px 34px rgba(255,120,40,.5); }
+    @media (max-width:540px){
+      .rules{padding:18px}
+      li{grid-template-columns:48px 1fr}
+      li::before{width:48px;height:48px}
+    }
+  </style>
+</head>
+<body>
+  <main class="rules" role="region" aria-labelledby="title">
+    <header class="header">
+      <div class="logo">QZ</div>
+      <div class="title">
+        <h1 id="title">Quiz Rules</h1>
+        <p>Read carefully before you start the attempt.</p>
+      </div>
+    </header>
+
+    <div class="badges">
+      <div class="badge">+1 for Correct</div>
+      <div class="badge">No Negative Marking</div>
+      <div class="badge warn">Timed Quiz</div>
+      <div class="badge">Single Attempt</div>
+    </div>
+
+    <ol>
+      <li>
+        <div class="point">
+          Attempt allowed <span class="hl">only once</span>. Use your own credentials.
+        </div>
+      </li>
+      <li>
+        <div class="point">
+          Login with a <span class="hl">valid Registration Number</span> and password.
+        </div>
+      </li>
+      <li>
+        <div class="point">
+          Scoring: <span class="ok">+1</span> per correct answer. <span class="no">0</span> for wrong — <span class="hl">no negative marking</span>.
+        </div>
+      </li>
+      <li>
+        <div class="point">
+          The quiz is <span class="hl">time-limited</span>. Submit within the given duration.
+        </div>
+      </li>
+      <li>
+        <div class="point">
+          Do <span class="hl">not refresh, go back, or close</span> the tab during the quiz.
+        </div>
+      </li>
+      <li>
+        <div class="point">
+          Your responses and score are <span class="hl">auto-saved</span> on submission.
+        </div>
+      </li>
+    </ol>
+    <footer class="footer">
+      <label class="agree">
+        <input type="checkbox" id="agree">
+        I have read and agree to the rules.
+      </label>
+      <button id="start" class="cta" disabled>START QUIZ</button>
+    </footer>
+    <p class="note">Tip: Keep your registration number ready before starting.</p>
+  </main>
+  <script>
+    const agree = document.getElementById('agree');
+    const start = document.getElementById('start');
+
+    agree.addEventListener('change', () => {
+      if (agree.checked){
+        start.disabled = false;
+        start.classList.add('enabled');
+      } else {
+        start.disabled = true;
+        start.classList.remove('enabled');
+      }
+    });
+    start.addEventListener('click', () => {
+      if (!start.disabled){
+        window.location.href = 'Quiz.html';
+      }
+    });
+  </script>
+</body>
+</html>
